@@ -66,15 +66,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
 
-      # Cache NPM dependencies
-      - name: Install and Cache NPM dependencies
-        id: cache
-        uses: actions/cache@v3    # https://github.com/marketplace/actions/cache#using-a-combination-of-restore-and-save-actions
-        with:
-          path: |
-            ~/.npm
-          key: npm-${{ hashFiles('package.json','**/package-lock.json') }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3    # https://github.com/marketplace/actions/docker-setup-build
 
@@ -170,7 +161,7 @@ jobs:
         uses: actions/cache@v3    # https://github.com/marketplace/actions/cache#using-a-combination-of-restore-and-save-actions
         with:
           path: ${{ env.TRIVY_CACHE_DIR }}
-          key: trivy-${{ hashFiles('**/pom.xml', '**/Containerfile*') }}    # Trivy scan results are influenced by npm dependencies and Containerfile runtime image
+          key: trivy-${{ hashFiles('**/package-lock.json', '**/Containerfile*') }}    # Trivy scan results are influenced by npm dependencies and Containerfile runtime image
 
       - name: Scan Image with Aqua Security Trivy
         uses: aquasecurity/trivy-action@0.13.0    # https://github.com/marketplace/actions/aqua-security-trivy
