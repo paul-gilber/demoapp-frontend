@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=build --chown=default:default /build/build ./build
 
 RUN npm install -g serve
-CMD serve -n -s build -l tcp://0.0.0.0:8080
+CMD serve -n -s /app/build -l tcp://0.0.0.0:8080

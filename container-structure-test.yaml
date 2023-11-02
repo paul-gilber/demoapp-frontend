@@ -1,0 +1,47 @@
+---
+# Container Structure Tests: https://github.com/GoogleContainerTools/container-structure-test
+# Run command:
+# > container-structure-test test --image demoapp-frontend --config container-structure-test.yaml
+schemaVersion: 2.0.0
+
+metadataTest:
+  envVars:
+    # Confirm NodeJS version
+    - key: NODEJS_VERSION
+      value: '18'
+    # Confirm Image OCI compliance
+    - key: container
+      value: oci
+  labels:
+    # Confirm labels from Red Hat provided base image
+    - key: com.redhat.component
+      value: nodejs-18-container    # Confirm base image was provided by Red Hat
+    - key: vendor
+      value: Red Hat, Inc.
+  exposedPorts: ["8080"]
+  volumes: []
+  entrypoint: ["container-entrypoint"]
+  cmd: ["/bin/sh", "-c", "serve -n -s /app/build -l tcp://0.0.0.0:8080"]
+  workdir: /app
+  user: 1001
+
+commandTests:
+  - name: Confirm Node JS Version
+    command: node
+    args: ['-v']
+    expectedOutput: ['v18.*']    # Version output is sent to stdout
+
+fileExistenceTests:
+  - name: Confirm absence of application source files
+    path: /app/src
+    shouldExist: false
+  - name: Confirm absence of application source files
+    path: /app/public
+    shouldExist: false
+  - name: Confirm existence of application build
+    path: /app/build
+    shouldExist: true
+    permissions: drwxr-xr-x
+    # UID and GID values are from based image: registry.access.redhat.com/ubi8/nodejs-18
+    uid: 1001
+    gid: 0
