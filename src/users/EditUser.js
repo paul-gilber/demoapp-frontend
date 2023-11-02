@@ -26,12 +26,12 @@ export default function EditUser() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://demoapp-backend:8080/user/${id}`, user);   // Updated by Paul Gilber
+    await axios.put(`${process.env.DEMOAPP_BACKEND_URL}/user/${id}`, user);   // Updated by Paul Gilber
     navigate("/");
   };
 
   const loadUser = async () => {
-    const result = await axios.get(`http://demoapp-backend:8080/user/${id}`);   // Updated by Paul Gilber
+    const result = await axios.get(`${process.env.DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
     setUser(result.data);
   };
 

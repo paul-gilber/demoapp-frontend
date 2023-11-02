@@ -17,7 +17,7 @@ export default function ViewUser() {
   }, []);
 
   const loadUser = async () => {
-    const result = await axios.get(`http://demoapp-backend:8080/user/${id}`);   // Updated by Paul Gilber
+    const result = await axios.get(`${process.env.DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
     setUser(result.data);
   };
 

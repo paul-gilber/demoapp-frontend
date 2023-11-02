@@ -19,7 +19,7 @@ export default function AddUser() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("http://demoapp-backend:8080/user", user);   // Updated by Paul Gilber
+    await axios.post(`${process.env.DEMOAPP_BACKEND_URL}/user`, user);   // Updated by Paul Gilber
     navigate("/");
   };
 

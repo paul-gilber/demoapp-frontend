@@ -13,12 +13,12 @@ export default function Home() {
   }, []);
 
   const loadUsers = async () => {
-    const result = await axios.get("http://demoapp-backend:8080/users");   // Updated by Paul Gilber
+    const result = await axios.get(`${process.env.DEMOAPP_BACKEND_URL}/users`);   // Updated by Paul Gilber
     setUsers(result.data);
   };
 
   const deleteUser = async (id) => {
-    await axios.delete(`http://demoapp-backend:8080/user/${id}`);   // Updated by Paul Gilber
+    await axios.delete(`${process.env.DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
     loadUsers();
   };
 

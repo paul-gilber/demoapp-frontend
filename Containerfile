@@ -17,6 +17,9 @@ RUN npm install \
 FROM ${RUNTIME_IMAGE}
 WORKDIR /app
 
+# Set default demoapp-backend url
+ENV DEMOAPP_BACKEND_URL "http://demoapp-backend:8080"
+
 COPY --from=build --chown=default:default /build/build ./build
 
 RUN npm install -g serve
