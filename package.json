@@ -16,7 +16,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "docker compose --project-directory deploy/docker-compose up -d",
+    "compose:up": "docker compose --project-directory deploy/docker-compose up -d",
+    "compose:stop": "docker compose --project-directory deploy/docker-compose stop",
+    "compose:down": "docker compose --project-directory deploy/docker-compose down",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
