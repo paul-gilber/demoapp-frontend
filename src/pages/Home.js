@@ -45,7 +45,7 @@ export default function Home() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr>
+              <tr key={user.id}>
                 <th scope="row" key={user.id}>
                   {user.id}
                 </th>
