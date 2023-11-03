@@ -7,7 +7,6 @@ export default function Home() {
   const [users, setUsers] = useState([]);
 
   // eslint-disable-next-line
-  const { id } = useParams();
 
   useEffect(() => {
     loadUsers();
@@ -45,10 +44,10 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {users.map((user) => (
               <tr>
-                <th scope="row" key={index}>
-                  {index + 1}
+                <th scope="row" key={user.id}>
+                  {user.id}
                 </th>
                 <td>{user.name}</td>
                 <td>{user.username}</td>
