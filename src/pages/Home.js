@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+const { DEMOAPP_BACKEND_URL } = require('../constants');
 
 export default function Home() {
   const [users, setUsers] = useState([]);
 
   // eslint-disable-next-line
-  const { id } = useParams();
 
   useEffect(() => {
     loadUsers();
   }, []);
 
   const loadUsers = async () => {
-    const result = await axios.get("http://demoapp-backend:8080/users");   // Updated by Paul Gilber
+    const result = await axios.get(
+      `${DEMOAPP_BACKEND_URL}/users`,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `${DEMOAPP_BACKEND_URL}`,
+          "Access-Control-Allow-Headers": 'Content-Type, Authorization'
+        }
+      }
+    );   // Updated by Paul Gilber
     setUsers(result.data);
   };
 
   const deleteUser = async (id) => {
-    await axios.delete(`http://demoapp-backend:8080/user/${id}`);   // Updated by Paul Gilber
+    await axios.delete(`${DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
     loadUsers();
   };
 
@@ -36,10 +44,10 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              <tr>
-                <th scope="row" key={index}>
-                  {index + 1}
+            {users.map((user) => (
+              <tr key={user.id}>
+                <th scope="row" key={user.id}>
+                  {user.id}
                 </th>
                 <td>{user.name}</td>
                 <td>{user.username}</td>

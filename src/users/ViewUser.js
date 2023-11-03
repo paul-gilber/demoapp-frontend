@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect,useState } from "react";
 import { Link, useParams } from "react-router-dom";
+const { DEMOAPP_BACKEND_URL } = require('../constants');
 
 export default function ViewUser() {
   const [user, setUser] = useState({
@@ -17,7 +18,7 @@ export default function ViewUser() {
   }, []);
 
   const loadUser = async () => {
-    const result = await axios.get(`http://demoapp-backend:8080/user/${id}`);   // Updated by Paul Gilber
+    const result = await axios.get(`${DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
     setUser(result.data);
   };
 

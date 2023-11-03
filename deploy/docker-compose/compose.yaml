@@ -1,0 +1,102 @@
+---
+# Networks top-level element reference: https://docs.docker.com/compose/compose-file/06-networks/
+networks:
+  backend:
+    # driver: host
+  frontend:
+    # driver: host
+
+# Service top-level element reference: https://docs.docker.com/compose/compose-file/05-services/
+services:
+  nginx:
+    depends_on:
+      demoapp-frontend:
+        condition: service_healthy    # healthy status is indicated by `healthcheck` keyword
+    build:
+      context: ../../nginx
+      dockerfile: Containerfile
+    ports:
+      - "8080:80"    # Forwards container port 80 to host port 8080. URL: http://localhost:8080/
+    networks:
+      - backend    # Connect to `backend` network
+      - frontend    # Connect to `frontend` network
+  demoapp-frontend:
+    depends_on:
+      demoapp-backend:
+        condition: service_healthy    # healthy status is indicated by `healthcheck` keyword
+    # image: ${DEMOAPP_FRONTEND_IMAGE}    # use image specified in .env file
+    # Build image from Containerfile
+    build:
+      context: ../../
+      dockerfile: Containerfile
+    environment:
+      REACT_APP_DEMOAPP_BACKEND_URL: "${DEMOAPP_BACKEND_URL}"    # Override default demoapp-backend url
+    healthcheck:
+      # Check Spring Boot Actuator
+      test: curl --fail http://localhost:8080/    # command for testing health
+      # Specifying durations: https://docs.docker.com/compose/compose-file/11-extension/#specifying-durations
+      interval: 5s    # specifies the time duration or interval in which the healthcheck process will execute
+      timeout: 1s     # defines the time duration to wait for a healthcheck
+      retries: 10     # is used to define the number of tries to implement the health check after failure
+    # Red Hat runtime image already exposes port 8080, thus `expose` keyword can be omitted
+    # expose:
+    #   - "8080"
+    restart: always
+    networks:
+      - backend    # Connect to `backend` network
+      - frontend    # Connect to `frontend` network
+  demoapp-backend:
+    depends_on:
+      mysql:
+        condition: service_healthy    # healthy status is indicated by `healthcheck` keyword
+    image: ${DEMOAPP_BACKEND_IMAGE}    # use image specified in .env file
+    # Build image from Containerfile
+    # build:
+    #   context: .
+    #   dockerfile: Containerfile.multistage
+    environment:
+      # Externalized Spring Configuration: https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      # Check Spring Boot Actuator
+      test: curl --fail http://localhost:8080/actuator/health    # command for testing health
+      # Specifying durations: https://docs.docker.com/compose/compose-file/11-extension/#specifying-durations
+      interval: 5s    # specifies the time duration or interval in which the healthcheck process will execute
+      timeout: 1s     # defines the time duration to wait for a healthcheck
+      retries: 10     # is used to define the number of tries to implement the health check after failure
+    # Red Hat runtime image already exposes port 8080, thus `expose` keyword can be omitted
+    # expose:
+    #   - "8080"
+    restart: always
+    networks:
+      - backend    # Connect to `backend` network
+      - frontend    # Connect to `frontend` network
+  mysql:    # Service name is also used as hostname when connecting from other containers
+    image: ${MYSQL_IMAGE}    # use image specified in .env file
+    # Docker Hub mysql image already exposes port 3306, thus `expose` keyword can be omitted
+    # expose:
+    #   - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      # Login to mysql demoapp db
+      test: mysql --host=localhost --user=root --password=$$MYSQL_ROOT_PASSWORD demoapp    # command for testing health
+      # Specifying durations: https://docs.docker.com/compose/compose-file/11-extension/#specifying-durations
+      interval: 5s    # specifies the time duration or interval in which the healthcheck process will execute
+      timeout: 1s     # defines the time duration to wait for a healthcheck
+      retries: 10     # is used to define the number of tries to implement the health check after failure
+    restart: always
+    volumes:
+      - type: volume
+        source: db-data
+        target: /var/lib/mysql
+    networks:
+      - backend    # Connect to `backend` network
+
+# Volumes top-level element reference: https://docs.docker.com/compose/compose-file/07-volumes/
+volumes:
+  db-data: {}
