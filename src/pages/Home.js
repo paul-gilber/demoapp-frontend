@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+const { DEMOAPP_BACKEND_URL } = require('../constants');
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -13,12 +14,12 @@ export default function Home() {
   }, []);
 
   const loadUsers = async () => {
-    const result = await axios.get(`${process.env.DEMOAPP_BACKEND_URL}/users`);   // Updated by Paul Gilber
+    const result = await axios.get(`${DEMOAPP_BACKEND_URL}/users`);   // Updated by Paul Gilber
     setUsers(result.data);
   };
 
   const deleteUser = async (id) => {
-    await axios.delete(`${process.env.DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
+    await axios.delete(`${DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
     loadUsers();
   };
 

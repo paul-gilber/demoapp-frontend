@@ -2,19 +2,33 @@
 # Networks top-level element reference: https://docs.docker.com/compose/compose-file/06-networks/
 networks:
   backend:
+    # driver: host
   frontend:
+    # driver: host
 
 # Service top-level element reference: https://docs.docker.com/compose/compose-file/05-services/
 services:
+  nginx:
+    depends_on:
+      demoapp-frontend:
+        condition: service_healthy    # healthy status is indicated by `healthcheck` keyword
+    build:
+      context: ../../nginx
+      dockerfile: Containerfile
+    ports:
+      - "8080:80"    # Forwards container port 80 to host port 8080. URL: http://localhost:8080/
+    networks:
+      - backend    # Connect to `backend` network
+      - frontend    # Connect to `frontend` network
   demoapp-frontend:
     depends_on:
       demoapp-backend:
         condition: service_healthy    # healthy status is indicated by `healthcheck` keyword
-    image: ${DEMOAPP_FRONTEND_IMAGE}    # use image specified in .env file
+    # image: ${DEMOAPP_FRONTEND_IMAGE}    # use image specified in .env file
     # Build image from Containerfile
-    # build:
-    #   context: .
-    #   dockerfile: Containerfile
+    build:
+      context: ../../
+      dockerfile: Containerfile
     environment:
       DEMOAPP_BACKEND_URL: "${DEMOAPP_BACKEND_URL}"    # Override default demoapp-backend url
     healthcheck:
@@ -27,14 +41,10 @@ services:
     # Red Hat runtime image already exposes port 8080, thus `expose` keyword can be omitted
     # expose:
     #   - "8080"
-    ports:
-      - "8080:8080"    # Forwards container port 8080 to host port 8080. URL: http://localhost:8080/
     restart: always
     networks:
       - backend    # Connect to `backend` network
       - frontend    # Connect to `frontend` network
-    links:
-      - "demoapp-backend:demoapp-backend"
   demoapp-backend:
     depends_on:
       mysql:
@@ -62,8 +72,6 @@ services:
     networks:
       - backend    # Connect to `backend` network
       - frontend    # Connect to `frontend` network
-    ports:
-      - "8088:8080"    # Forwards container port 8080 to host port 8088. URL: http://localhost:8088/
   mysql:    # Service name is also used as hostname when connecting from other containers
     image: ${MYSQL_IMAGE}    # use image specified in .env file
     # Docker Hub mysql image already exposes port 3306, thus `expose` keyword can be omitted

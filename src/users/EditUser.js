@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+const { DEMOAPP_BACKEND_URL } = require('../constants');
 
 export default function EditUser() {
   let navigate = useNavigate();
@@ -26,12 +27,12 @@ export default function EditUser() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`${process.env.DEMOAPP_BACKEND_URL}/user/${id}`, user);   // Updated by Paul Gilber
+    await axios.put(`${DEMOAPP_BACKEND_URL}/user/${id}`, user);   // Updated by Paul Gilber
     navigate("/");
   };
 
   const loadUser = async () => {
-    const result = await axios.get(`${process.env.DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
+    const result = await axios.get(`${DEMOAPP_BACKEND_URL}/user/${id}`);   // Updated by Paul Gilber
     setUser(result.data);
   };
 

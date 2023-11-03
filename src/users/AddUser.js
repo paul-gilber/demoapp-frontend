@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+const { DEMOAPP_BACKEND_URL } = require('../constants');
 
 export default function AddUser() {
   let navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function AddUser() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.post(`${process.env.DEMOAPP_BACKEND_URL}/user`, user);   // Updated by Paul Gilber
+    await axios.post(`${DEMOAPP_BACKEND_URL}/user`, user);   // Updated by Paul Gilber
     navigate("/");
   };
 
