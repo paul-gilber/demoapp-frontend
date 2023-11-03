@@ -22,6 +22,6 @@ do
   value=$(printf '%s\n' "${!varname}")
   [[ -z $value ]] && value=${varvalue}
   echo "  $varname: \"$value\"," >> "${output_dir}/${output_file_name}"
-done < .env
+done < <(grep -v "^#" .env)
 
 echo "}" >> "${output_dir}/${output_file_name}"

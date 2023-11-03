@@ -14,7 +14,15 @@ export default function Home() {
   }, []);
 
   const loadUsers = async () => {
-    const result = await axios.get(`${DEMOAPP_BACKEND_URL}/users`);   // Updated by Paul Gilber
+    const result = await axios.get(
+      `${DEMOAPP_BACKEND_URL}/users`,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": `${DEMOAPP_BACKEND_URL}`,
+          "Access-Control-Allow-Headers": 'Content-Type, Authorization'
+        }
+      }
+    );   // Updated by Paul Gilber
     setUsers(result.data);
   };
 

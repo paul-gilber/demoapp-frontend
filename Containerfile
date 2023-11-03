@@ -19,9 +19,9 @@ WORKDIR /app
 
 COPY --from=build --chown=default:default /build/build /app/build
 # .env file is copied during runtime and will be appended to env-config.js
-COPY --chmod=644 .env /app/.env
+COPY --chown=1001:0 --chmod=644 .env /app/.env
 # env.sh is used for generating env-config.js, env.sh will override .env entries when they are defined in the environment variables
-COPY --chmod=755 env.sh /app/env.sh
+COPY --chown=1001:0 --chmod=755 env.sh /app/env.sh
 
 RUN npm install -g serve
 CMD /app/env.sh build && serve -n -s /app/build -l tcp://0.0.0.0:8080

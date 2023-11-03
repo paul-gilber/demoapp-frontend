@@ -21,7 +21,11 @@ metadataTest:
   exposedPorts: ["8080"]
   volumes: []
   entrypoint: ["container-entrypoint"]
-  cmd: ["/bin/sh", "-c", "serve -n -s /app/build -l tcp://0.0.0.0:8080"]
+  cmd: [
+    "/bin/sh",
+    "-c",
+    "/app/env.sh build && serve -n -s /app/build -l tcp://0.0.0.0:8080"
+  ]
   workdir: /app
   user: 1001
 
@@ -38,6 +42,20 @@ fileExistenceTests:
   - name: Confirm absence of application source files
     path: /app/public
     shouldExist: false
+  - name: Confirm existence of /app/.env
+    path: /app/.env
+    shouldExist: true
+    permissions: -rw-r--r--
+    # UID and GID values are from based image: registry.access.redhat.com/ubi8/nodejs-18
+    uid: 1001
+    gid: 0
+  - name: Confirm existence of /app/env.sh
+    path: /app/env.sh
+    shouldExist: true
+    permissions: -rwxr-xr-x
+    # UID and GID values are from based image: registry.access.redhat.com/ubi8/nodejs-18
+    uid: 1001
+    gid: 0
   - name: Confirm existence of application build
     path: /app/build
     shouldExist: true
