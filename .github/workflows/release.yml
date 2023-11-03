@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main    # When `latest` image tag is published when default branch is update
+      - fix-release
     tags:
       - 'v*'    # When a tag starting with `v` is created e.g. v1.0.0
 
