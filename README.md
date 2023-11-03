@@ -9,3 +9,6 @@ This project was forked from: [arjungautam1/fullstack-frontend](https://github.c
 docker build -f Containerfile -t demoapp-frontend .
 docker run -p 8080:8080 demoapp-frontend
 ```
+
+## References
+- [Deploying ReactJS to multiple environments](https://adjoe.io/engineer-blog/react-applications-build-once-deploy-anywhere-in-react/)

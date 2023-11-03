@@ -1,3 +1,3 @@
-const DEMOAPP_BACKEND_URL = process.env.DEMOAPP_BACKEND_URL || 'http://demoapp-backend:8080/api';
+const DEMOAPP_BACKEND_URL = window.env.REACT_APP_DEMOAPP_BACKEND_URL;
 
 exports.DEMOAPP_BACKEND_URL = DEMOAPP_BACKEND_URL

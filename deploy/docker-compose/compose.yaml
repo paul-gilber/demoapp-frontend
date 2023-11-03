@@ -30,7 +30,7 @@ services:
       context: ../../
       dockerfile: Containerfile
     environment:
-      DEMOAPP_BACKEND_URL: "${DEMOAPP_BACKEND_URL}"    # Override default demoapp-backend url
+      REACT_APP_DEMOAPP_BACKEND_URL: "${DEMOAPP_BACKEND_URL}"    # Override default demoapp-backend url
     healthcheck:
       # Check Spring Boot Actuator
       test: curl --fail http://localhost:8080/    # command for testing health
