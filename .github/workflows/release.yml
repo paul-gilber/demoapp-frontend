@@ -12,10 +12,6 @@ on:
     tags:
       - 'v*'    # When a tag starting with `v` is created e.g. v1.0.0
 
-# Set Workflow-level environment variables
-env:
-  PROJECT: demoapp-frontend
-
 jobs:
   push_to_registries:
     name: Push Container image to multiple registries

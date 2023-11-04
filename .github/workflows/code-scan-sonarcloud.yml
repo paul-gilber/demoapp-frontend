@@ -33,16 +33,8 @@ jobs:
       pull-requests: read    # Allow SonarCloud to get pull request details
     environment: sonarcloud    # Use `sonarcloud` repository environment
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
-        run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
 
       - name: Checkout repository
         uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
@@ -65,8 +57,8 @@ jobs:
         with:
           projectBaseDir: src
           args: >
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ env.CI_REPOSITORY_OWNER }}
+            -Dsonar.projectKey=${{ env.CI_REPOSITORY_OWNER }}_${{ env.CI_REPOSITORY_NAME }}
 
       # In case you need to override default settings
       # - name: Analyze with SonarCloud
@@ -91,7 +83,7 @@ jobs:
       #   run: |
       #     mvn -B verify \
       #       org.sonarsource.scanner.npm:sonar-npm-plugin:sonar \
-      #       -Drevision=${{ env.VERSION }} \
+      #       -Drevision=${{ env.CI_ACTION_REF_NAME }} \
       #       -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
       #       -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} \
       #       -Dmaven.test.skip=true \
@@ -111,7 +103,7 @@ jobs:
       #   run: |
       #     mvn -B verify \
       #       org.sonarsource.scanner.npm:sonar-npm-plugin:sonar \
-      #       -Drevision=${{ env.VERSION }} \
+      #       -Drevision=${{ env.CI_ACTION_REF_NAME }} \
       #       -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
       #       -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} \
       #       -Dsonar.pullrequest.provider=GitHub \

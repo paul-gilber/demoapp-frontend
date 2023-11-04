@@ -2,9 +2,7 @@
 # Networks top-level element reference: https://docs.docker.com/compose/compose-file/06-networks/
 networks:
   backend:
-    # driver: host
   frontend:
-    # driver: host
 
 # Service top-level element reference: https://docs.docker.com/compose/compose-file/05-services/
 services:
@@ -32,7 +30,6 @@ services:
     environment:
       REACT_APP_DEMOAPP_BACKEND_URL: "${DEMOAPP_BACKEND_URL}"    # Override default demoapp-backend url
     healthcheck:
-      # Check Spring Boot Actuator
       test: curl --fail http://localhost:8080/    # command for testing health
       # Specifying durations: https://docs.docker.com/compose/compose-file/11-extension/#specifying-durations
       interval: 5s    # specifies the time duration or interval in which the healthcheck process will execute

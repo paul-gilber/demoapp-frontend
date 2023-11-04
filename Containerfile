@@ -5,11 +5,12 @@ ARG RUNTIME_IMAGE="registry.access.redhat.com/ubi8/nodejs-18"
 FROM ${BUILD_IMAGE} as build
 WORKDIR /build
 
+COPY package-lock.json ./package-lock.json
 COPY package.json ./package.json
 COPY public ./public
 COPY src ./src
 
-RUN npm install \
+RUN npm ci \
     && npm run build
 
 

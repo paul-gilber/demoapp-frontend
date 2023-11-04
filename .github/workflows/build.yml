@@ -28,40 +28,43 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Set Workflow-level environment variables
-env:
-  PROJECT: demoapp-frontend
-
 jobs:
-  build:
+  unit-test:
     # Run job when not triggered by a merge
     if: (github.event_name == 'push' && contains(toJSON(github.event.head_commit.message), 'Merge pull request ') == false) || (github.event_name != 'push')
     runs-on: ubuntu-latest
-    environment: docker-hub    # Use `docker-hub` repository environment
-    # Uncomment lines below to run `build` job on container
-    # Note: container image must contains commands required for step execution, e.g. docker, gzip, etc.
-    # container:
-    #   image: mcr.microsoft.com/openjdk/jdk:17-ubuntu    # Image Java version must match with `project.version` in pom.xml
-    #   # Set credentials when container registry requires authentication to pull the image
-    #   # credentials:
-    #   #   username: ${{ github.actor }}
-    #   #   password: ${{ secrets.github_token }}
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
-        run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
+
+      # Cache NPM dependencies
+      - name: Cache NPM dependencies
+        id: cache
+        uses: actions/cache@v3    # https://github.com/marketplace/actions/cache#using-a-combination-of-restore-and-save-actions
+        with:
+          path: |
+            node_modules
+          key: npm-${{ hashFiles('package-lock.json') }}
+
+      # Install NPM dependencies
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
+
+  build:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    environment: docker-hub    # Use `docker-hub` repository environment
+    steps:
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
 
       # Set Complete Container Image URL
       - name: Set CONTAINER_IMAGE_URL
         run: |
-          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.CI_REPOSITORY_NAME }}:${{ env.CI_ACTION_REF_NAME }}" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
@@ -91,21 +94,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: docker-hub    # Use `docker-hub` repository environment
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
-        run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
 
       # Set Complete Container Image URL
       - name: Set CONTAINER_IMAGE_URL
         run: |
-          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.CI_REPOSITORY_NAME }}:${{ env.CI_ACTION_REF_NAME }}" >> $GITHUB_ENV
 
       - name: Login to DockerHub
         uses: docker/login-action@v3    # https://github.com/marketplace/actions/docker-login
@@ -137,21 +132,13 @@ jobs:
     env:
       TRIVY_CACHE_DIR: /tmp/trivy/
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
-        run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
 
       # Set Complete Container Image URL
       - name: Set CONTAINER_IMAGE_URL
         run: |
-          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.CI_REPOSITORY_NAME }}:${{ env.CI_ACTION_REF_NAME }}" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
