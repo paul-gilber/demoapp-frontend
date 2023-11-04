@@ -47,30 +47,46 @@ jobs:
     needs: unit-test
     runs-on: ubuntu-latest
     environment: docker-hub    # Use `docker-hub` repository environment
-    # Uncomment lines below to run `build` job on container
-    # Note: container image must contains commands required for step execution, e.g. docker, gzip, etc.
-    # container:
-    #   image: mcr.microsoft.com/openjdk/jdk:17-ubuntu    # Image Java version must match with `project.version` in pom.xml
-    #   # Set credentials when container registry requires authentication to pull the image
-    #   # credentials:
-    #   #   username: ${{ github.actor }}
-    #   #   password: ${{ secrets.github_token }}
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
+      - name: Print environment variables
         run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "CI_REPOSITORY_SLUG=$CI_REPOSITORY_SLUG"
+          echo "CI_REPOSITORY_OWNER=$CI_REPOSITORY_OWNER"
+          echo "CI_REPOSITORY_OWNER_SLUG=$CI_REPOSITORY_OWNER_SLUG"
+          echo "CI_REPOSITORY_NAME=$CI_REPOSITORY_NAME"
+          echo "CI_REPOSITORY_NAME_SLUG=$CI_REPOSITORY_NAME_SLUG"
+          echo "CI_REPOSITORY=$CI_REPOSITORY"
+          echo "CI_REF_SLUG=$CI_REF_SLUG"
+          echo "CI_ACTION_REF_NAME=$CI_ACTION_REF_NAME"
+          echo "CI_ACTION_REF_NAME_SLUG=$CI_ACTION_REF_NAME_SLUG"
+          echo "CI_REF_NAME=$CI_REF_NAME"
+          echo "CI_ACTION_REF_NAME=$CI_ACTION_REF_NAME"
+          echo "CI_REF=$CI_REF"
+          echo "CI_HEAD_REF_SLUG=$CI_HEAD_REF_SLUG"
+          echo "CI_HEAD_REF=$CI_HEAD_REF"
+          echo "CI_BASE_REF_SLUG=$CI_BASE_REF_SLUG"
+          echo "CI_BASE_REF=$CI_BASE_REF"
+          echo "CI_SHA_SHORT=$CI_SHA_SHORT"
+          echo "CI_SHA=$CI_SHA"
+          echo "CI_PR_SHA_SHORT=$CI_PR_SHA_SHORT"
+          echo "CI_PR_SHA=$CI_PR_SHA"
+          echo "CI_PR_NUMBER=$CI_PR_NUMBER"
+          echo "CI_PR_ID=$CI_PR_ID"
+          echo "CI_PR_TITLE=$CI_PR_TITLE"
+          echo "CI_PR_DESCRIPTION=$CI_PR_DESCRIPTION"
+          echo "CI_ACTOR=$CI_ACTOR"
+          echo "CI_EVENT_NAME=$CI_EVENT_NAME"
+          echo "CI_RUN_ID=$CI_RUN_ID"
+          echo "CI_RUN_NUMBER=$CI_RUN_NUMBER"
+          echo "CI_WORKFLOW=$CI_WORKFLOW"
+          echo "CI_ACTION=$CI_ACTION"
 
       # Set Complete Container Image URL
       - name: Set CONTAINER_IMAGE_URL
         run: |
-          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.CI_ACTION_REF_NAME }}" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
@@ -100,21 +116,45 @@ jobs:
     runs-on: ubuntu-latest
     environment: docker-hub    # Use `docker-hub` repository environment
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
+      - name: Print environment variables
         run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "CI_REPOSITORY_SLUG=$CI_REPOSITORY_SLUG"
+          echo "CI_REPOSITORY_OWNER=$CI_REPOSITORY_OWNER"
+          echo "CI_REPOSITORY_OWNER_SLUG=$CI_REPOSITORY_OWNER_SLUG"
+          echo "CI_REPOSITORY_NAME=$CI_REPOSITORY_NAME"
+          echo "CI_REPOSITORY_NAME_SLUG=$CI_REPOSITORY_NAME_SLUG"
+          echo "CI_REPOSITORY=$CI_REPOSITORY"
+          echo "CI_REF_SLUG=$CI_REF_SLUG"
+          echo "CI_ACTION_REF_NAME=$CI_ACTION_REF_NAME"
+          echo "CI_ACTION_REF_NAME_SLUG=$CI_ACTION_REF_NAME_SLUG"
+          echo "CI_REF_NAME=$CI_REF_NAME"
+          echo "CI_ACTION_REF_NAME=$CI_ACTION_REF_NAME"
+          echo "CI_REF=$CI_REF"
+          echo "CI_HEAD_REF_SLUG=$CI_HEAD_REF_SLUG"
+          echo "CI_HEAD_REF=$CI_HEAD_REF"
+          echo "CI_BASE_REF_SLUG=$CI_BASE_REF_SLUG"
+          echo "CI_BASE_REF=$CI_BASE_REF"
+          echo "CI_SHA_SHORT=$CI_SHA_SHORT"
+          echo "CI_SHA=$CI_SHA"
+          echo "CI_PR_SHA_SHORT=$CI_PR_SHA_SHORT"
+          echo "CI_PR_SHA=$CI_PR_SHA"
+          echo "CI_PR_NUMBER=$CI_PR_NUMBER"
+          echo "CI_PR_ID=$CI_PR_ID"
+          echo "CI_PR_TITLE=$CI_PR_TITLE"
+          echo "CI_PR_DESCRIPTION=$CI_PR_DESCRIPTION"
+          echo "CI_ACTOR=$CI_ACTOR"
+          echo "CI_EVENT_NAME=$CI_EVENT_NAME"
+          echo "CI_RUN_ID=$CI_RUN_ID"
+          echo "CI_RUN_NUMBER=$CI_RUN_NUMBER"
+          echo "CI_WORKFLOW=$CI_WORKFLOW"
+          echo "CI_ACTION=$CI_ACTION"
 
       # Set Complete Container Image URL
       - name: Set CONTAINER_IMAGE_URL
         run: |
-          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.CI_ACTION_REF_NAME }}" >> $GITHUB_ENV
 
       - name: Login to DockerHub
         uses: docker/login-action@v3    # https://github.com/marketplace/actions/docker-login
@@ -146,21 +186,45 @@ jobs:
     env:
       TRIVY_CACHE_DIR: /tmp/trivy/
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
+      - name: Print environment variables
         run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "CI_REPOSITORY_SLUG=$CI_REPOSITORY_SLUG"
+          echo "CI_REPOSITORY_OWNER=$CI_REPOSITORY_OWNER"
+          echo "CI_REPOSITORY_OWNER_SLUG=$CI_REPOSITORY_OWNER_SLUG"
+          echo "CI_REPOSITORY_NAME=$CI_REPOSITORY_NAME"
+          echo "CI_REPOSITORY_NAME_SLUG=$CI_REPOSITORY_NAME_SLUG"
+          echo "CI_REPOSITORY=$CI_REPOSITORY"
+          echo "CI_REF_SLUG=$CI_REF_SLUG"
+          echo "CI_ACTION_REF_NAME=$CI_ACTION_REF_NAME"
+          echo "CI_ACTION_REF_NAME_SLUG=$CI_ACTION_REF_NAME_SLUG"
+          echo "CI_REF_NAME=$CI_REF_NAME"
+          echo "CI_ACTION_REF_NAME=$CI_ACTION_REF_NAME"
+          echo "CI_REF=$CI_REF"
+          echo "CI_HEAD_REF_SLUG=$CI_HEAD_REF_SLUG"
+          echo "CI_HEAD_REF=$CI_HEAD_REF"
+          echo "CI_BASE_REF_SLUG=$CI_BASE_REF_SLUG"
+          echo "CI_BASE_REF=$CI_BASE_REF"
+          echo "CI_SHA_SHORT=$CI_SHA_SHORT"
+          echo "CI_SHA=$CI_SHA"
+          echo "CI_PR_SHA_SHORT=$CI_PR_SHA_SHORT"
+          echo "CI_PR_SHA=$CI_PR_SHA"
+          echo "CI_PR_NUMBER=$CI_PR_NUMBER"
+          echo "CI_PR_ID=$CI_PR_ID"
+          echo "CI_PR_TITLE=$CI_PR_TITLE"
+          echo "CI_PR_DESCRIPTION=$CI_PR_DESCRIPTION"
+          echo "CI_ACTOR=$CI_ACTOR"
+          echo "CI_EVENT_NAME=$CI_EVENT_NAME"
+          echo "CI_RUN_ID=$CI_RUN_ID"
+          echo "CI_RUN_NUMBER=$CI_RUN_NUMBER"
+          echo "CI_WORKFLOW=$CI_WORKFLOW"
+          echo "CI_ACTION=$CI_ACTION"
 
       # Set Complete Container Image URL
       - name: Set CONTAINER_IMAGE_URL
         run: |
-          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.CI_ACTION_REF_NAME }}" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
