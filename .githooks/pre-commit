@@ -2,3 +2,6 @@
 
 # Lint YAML Files
 yamllint .
+
+# Dry-run docker compose
+docker compose --project-directory deploy/docker-compose create --dry-run
