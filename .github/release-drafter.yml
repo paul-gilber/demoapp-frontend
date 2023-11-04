@@ -41,5 +41,5 @@ template: |
 
   ## Install from the command line
   ```sh
-  DEMOAPP_BACKEND_IMAGE="ghcr.io/$OWNER/$REPOSITORY:v$RESOLVED_VERSION" docker compose --project-directory deploy/docker-compose up
+  DEMOAPP_FRONTEND_IMAGE="ghcr.io/$OWNER/$REPOSITORY:v$RESOLVED_VERSION" docker compose --project-directory deploy/docker-compose up
   ```

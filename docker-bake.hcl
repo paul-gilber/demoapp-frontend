@@ -16,8 +16,8 @@ target "build" {
 target "platforms" {
   // Set target platforms for multi-platform builds https://docs.docker.com/build/bake/reference/#targetplatforms
   platforms = [
-    "linux/amd64",
-    "linux/arm64"
+    "linux/amd64"
+    // "linux/arm64" // build gets stuck check dependencies
   ]
 }
 

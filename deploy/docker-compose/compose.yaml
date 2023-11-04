@@ -24,11 +24,11 @@ services:
     depends_on:
       demoapp-backend:
         condition: service_healthy    # healthy status is indicated by `healthcheck` keyword
-    # image: ${DEMOAPP_FRONTEND_IMAGE}    # use image specified in .env file
+    image: ${DEMOAPP_FRONTEND_IMAGE}    # use image specified in .env file
     # Build image from Containerfile
-    build:
-      context: ../../
-      dockerfile: Containerfile
+    # build:
+    #   context: ../../
+    #   dockerfile: Containerfile
     environment:
       REACT_APP_DEMOAPP_BACKEND_URL: "${DEMOAPP_BACKEND_URL}"    # Override default demoapp-backend url
     healthcheck:
