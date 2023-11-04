@@ -20,10 +20,6 @@ on:
 # Set Workflow-level permissions: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
 permissions: {}    # This Workflow does not require any permission
 
-# Set Workflow-level environment variables
-env:
-  PROJECT: demoapp-frontend
-
 jobs:
   output-information:
     runs-on: ubuntu-latest
@@ -45,23 +41,20 @@ jobs:
   #     - name: Skopeo Delete Image
   #       id: skopeo-delete
   #       run: |
-  #         skopeo delete docker://${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}
+  #         skopeo delete docker://${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.CI_REPOSITORY_NAME }}:${{ env.CI_ACTION_REF_NAME }}
 
   # Regctl allows image tag deletion which is allowed by Docker Hub
   docker-hub-regctl:
     runs-on: ubuntu-latest
     environment: docker-hub
     steps:
-      # Workaround for the absence of github.branch_name
-      # Setting an environment variable: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-      - name: Set VERSION
-        if: github.head_ref != ''
+      # Workaround for the absence of github.branch_name, use github-env-vars-action to define useful environment variables not available by default
+      - uses: FranzDiebold/github-env-vars-action@v2    # https://github.com/marketplace/actions/github-environment-variables-action
+
+      # Set Complete Container Image URL
+      - name: Set CONTAINER_IMAGE_URL
         run: |
-          echo "VERSION=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set VERSION
-        if: github.head_ref == ''
-        run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "CONTAINER_IMAGE_URL=${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.CI_REPOSITORY_NAME }}:${{ env.CI_ACTION_REF_NAME }}" >> $GITHUB_ENV
 
       # Install regctl: https://github.com/regclient/regclient
       - name: Install regctl
@@ -75,4 +68,4 @@ jobs:
             --pass ${{ secrets.DOCKER_REGISTRY_PASSWORD }} \
       - name: regctl Delete Image Tag
         run: |
-          ./regctl tag delete ${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.PROJECT }}:${{ env.VERSION }}
+          ./regctl tag delete ${{ vars.DOCKER_REGISTRY_URL }}/${{ vars.DOCKER_REPOSITORY }}/${{ env.CI_REPOSITORY_NAME }}:${{ env.CI_ACTION_REF_NAME }}
