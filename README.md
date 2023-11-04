@@ -92,15 +92,6 @@ docker build -f Containerfile -t demoapp-frontend .
 [Compose](https://docs.docker.com/compose/) is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application's services. Then, with a single command, you create and start all the services from your configuration.
 
 By default, Compose looks up configuration from [compose.yaml](compose.yaml).
-To ensure successful run of the Application, `spring.datasource.url` from [application.properties](src/main/resources/application.properties) must match with [compose.yaml](compose.yaml)
-```sh
-# src/main/resources/application.properties
-spring.datasource.url=jdbc:mysql://mysql:3306/demoapp
-# Database credentials must not be hardcoded and should be provided using Environment variables
-# Externalized Spring Configuration: https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html
-spring.datasource.username=  # Environment variable: SPRING_DATASOURCE_USERNAME
-spring.datasource.password=  # Environment variable: SPRING_DATASOURCE_PASSWORD
-```
 ```yaml
 # showing diff from demoapp-backend compose.yaml: https://github.com/paul-gilber/demoapp-backend/blob/main/deploy/docker-compose/compose.yaml
 networks:
