@@ -47,3 +47,8 @@ template: |
   docker compose --project-directory deploy/docker-compose up
   # Application URL: http://localhost:8080/
   ```
+
+  ## Uninstall from the command line
+  ```sh
+  docker compose --project-directory deploy/docker-compose down --volumes
+  ```
