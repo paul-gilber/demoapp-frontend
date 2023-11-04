@@ -33,9 +33,18 @@ env:
   PROJECT: demoapp-frontend
 
 jobs:
-  build:
+  unit-test:
     # Run job when not triggered by a merge
     if: (github.event_name == 'push' && contains(toJSON(github.event.head_commit.message), 'Merge pull request ') == false) || (github.event_name != 'push')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
+      - name: Run tests
+        run: npm run test
+
+  build:
+    needs: unit-test
     runs-on: ubuntu-latest
     environment: docker-hub    # Use `docker-hub` repository environment
     # Uncomment lines below to run `build` job on container
@@ -85,15 +94,6 @@ jobs:
           tags: ${{ env.CONTAINER_IMAGE_URL }}    # CONTAINER_IMAGE_URL is defined in GITHUB_ENV
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  unit-test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
-      - name: Run tests
-        run: npm run test
 
   container-structure-test:
     needs: build
