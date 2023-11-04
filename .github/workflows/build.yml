@@ -86,6 +86,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  unit-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
+      - name: Run tests
+        run: npm run test
+
   container-structure-test:
     needs: build
     runs-on: ubuntu-latest
