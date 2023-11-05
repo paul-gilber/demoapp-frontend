@@ -27,6 +27,14 @@
 		},
 		// Install Homebrew: https://github.com/meaningful-ooo/devcontainer-features/tree/main/src/homebrew
 		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+		// Install Homebrew Package: https://github.com/devcontainers-contrib/features/tree/main/src/homebrew-package
+		"ghcr.io/devcontainers-contrib/features/homebrew-package:1": {},
+		// Install MySQL (via Homebrew): http://github.com/devcontainers-contrib/features/tree/main/src/mysql-homebrew
+		"ghcr.io/devcontainers-contrib/features/mysql-homebrew:1": {},
+		// Install Podman (via Homebrew): http://github.com/devcontainers-contrib/features/tree/main/src/podman-homebrew
+		"ghcr.io/devcontainers-contrib/features/podman-homebrew:1": {},
+		// Install Trivy: https://github.com/itsmechlark/features/tree/main/src/trivy
+		"ghcr.io/itsmechlark/features/trivy:1": {},
 		// Install jq, yq, gojq, xq, jaq : https://github.com/eitsupi/devcontainer-features/tree/main/src/jq-likes
 		"ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {
 			"jqVersion": "latest",
