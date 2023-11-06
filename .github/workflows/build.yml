@@ -151,7 +151,7 @@ jobs:
           key: trivy-${{ hashFiles('**/package-lock.json', '**/Containerfile*') }}    # Trivy scan results are influenced by npm dependencies and Containerfile runtime image
 
       - name: Scan Image with Aqua Security Trivy
-        uses: aquasecurity/trivy-action@0.13.0    # https://github.com/marketplace/actions/aqua-security-trivy
+        uses: aquasecurity/trivy-action@0.13.1    # https://github.com/marketplace/actions/aqua-security-trivy
         with:
           image-ref: ${{ env.CONTAINER_IMAGE_URL }}    # CONTAINER_IMAGE_URL is defined in GITHUB_ENV
           vuln-type: 'os,library'
