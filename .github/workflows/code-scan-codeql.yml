@@ -41,7 +41,7 @@ jobs:
       # Initializes CodeQL scanning tools
       # https://github.com/github/codeql-action
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2.22.5    # https://github.com/github/codeql-action
+        uses: github/codeql-action/init@v2.22.7    # https://github.com/github/codeql-action
 
       # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
@@ -57,4 +57,4 @@ jobs:
           npm ci
 
       - name: Run CodeQL Analysis
-        uses: github/codeql-action/analyze@v2.22.5
+        uses: github/codeql-action/analyze@v2.22.7
