@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4    # https://github.com/marketplace/actions/checkout
 
-      - uses: actions/labeler@v4
+      - uses: actions/labeler@v5
         with:
           configuration-path: ./.github/labeler.yml
           sync-labels: true    # Whether or not to remove labels when matching files are reverted or no longer changed by the PR
